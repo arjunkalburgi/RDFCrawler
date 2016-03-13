@@ -1,0 +1,18 @@
+//sourceCompatibility = 1.5
+//targetCompatibility = 1.5
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile group: 'org.apache.jena', name: 'apache-jena-libs', version: '2.13.0'
+    
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12-rc-1'
+}
