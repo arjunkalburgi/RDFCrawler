@@ -7,8 +7,8 @@ import com.hp.hpl.jena.tdb.*;
 
 public class crawler {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		String iP = "C:\\Users\\Arjun\\Documents\\Projects\\Java\\workspace\\RDF\\RDFcrawler\\src\\input.txt"; 
-		String pP = "C:\\Users\\Arjun\\Documents\\Projects\\Java\\workspace\\RDF\\RDFcrawler\\src\\properties.txt"; 
+		String iP = "./input.txt"; 
+		String pP = "./properties.txt"; 
 		
 //		crawler foo = new crawler(iP, pP);
 //		foo.setDepth(2); 
@@ -33,7 +33,7 @@ public class crawler {
 		propertyPath = property; 
 		setHash(); 
 		
-		dataset = TDBFactory.createDataset("C:\\Users\\Arjun\\Documents\\Java\\workspace\\RDF\\rdfcrawler\\src\\rdfcrawlerDB");
+		dataset = TDBFactory.createDataset("./src/rdfcrawlerDB");
 	}
 	
 	public crawler(String property) {

@@ -2,15 +2,18 @@
 //targetCompatibility = 1.5
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+mainClassName = "Main"
+applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-
     compile group: 'org.apache.jena', name: 'apache-jena-libs', version: '2.13.0'
-    
 }
 
 task wrapper(type: Wrapper) {
