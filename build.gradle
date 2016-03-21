@@ -5,7 +5,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-mainClassName = "Main"
+mainClassName = "crawler"
 applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
 
 repositories {

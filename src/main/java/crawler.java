@@ -1,12 +1,15 @@
 import java.io.*;
 import java.util.HashMap;
 
+import org.apache.jena.riot.RDFFormat;
+
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.tdb.*;
 
 public class crawler {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
+		System.out.println("hi"); 
 		String iP = "./input.txt"; 
 		String pP = "./properties.txt"; 
 		
@@ -40,7 +43,7 @@ public class crawler {
 		propertyPath = property; 
 		setHash(); 
 		
-		dataset = TDBFactory.createDataset("C:\\Users\\Arjun\\Documents\\Java\\workspace\\RDF\\rdfcrawler\\src\\rdfcrawlerDB");
+		dataset = TDBFactory.createDataset("./src/rdfcrawlerDB");
 	}
 	
 	public void setDepth(int d) {
@@ -62,8 +65,11 @@ public class crawler {
 	public void crawlSubject(String subject) {
 		Model tdb = dataset.getNamedModel(subject);
 		crawlSubject(subject, 0, tdb); //starting depth
-		// Crawling is complete. Save data. 
+		// Crawling is complete. Save data.
 		//tdb.tdbdump
+		//RDFDataMgr.write(System.out, tdb, RDFFormat.RDFXML); 
+		//tdb.write(new File("./src/output.xml"));
+		tdb.write(System.out, "RDF/XML"); 
 	}
 	
 	public void draw() {
@@ -95,6 +101,7 @@ public class crawler {
 	                RDFNode o = t.get("x");
 	                //TODO store thing in tdb with subject as graph name
 	                tdb.add(sub, p, o);
+			System.out.println(o.toString()); 
 	                
 	                //TODO call crawlSubject with thing and depth+1
 	                crawlSubject(o.toString(), depth+1, tdb); 

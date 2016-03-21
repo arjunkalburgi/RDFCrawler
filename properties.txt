@@ -1,3 +1,1 @@
-+ dbo:citizenship
-+ dbo:currency
-- else
++ dbo:influencedBy
