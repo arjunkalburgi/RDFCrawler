@@ -9,7 +9,6 @@ import com.hp.hpl.jena.tdb.*;
 
 public class crawler {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		System.out.println("hi"); 
 		String iP = "./input.txt"; 
 		String pP = "./properties.txt"; 
 		
@@ -95,16 +94,19 @@ public class crawler {
             Resource sub = ResourceFactory.createResource("http://dbpedia.org/resource/" + geturistring(subject));
             while (r.hasNext()) {
                 QuerySolution t = r.nextSolution();
-                
+                System.out.println(t.getResource("b".toString()) + " " + property_else);
+                System.out.println("Error is that it's not finding the right properties notice all the properties are false."); 
                 if (properties.containsKey(t.getResource("b".toString())) || property_else == true) {
-	                Property p = ResourceFactory.createProperty(t.getResource("b").toString());
+                	 
+                	/*Property p = ResourceFactory.createProperty(t.getResource("b").toString());
 	                RDFNode o = t.get("x");
 	                //TODO store thing in tdb with subject as graph name
 	                tdb.add(sub, p, o);
-			System.out.println(o.toString()); 
+	                System.out.println(sub.toString() + " " + p.toString() + " " + o.toString());
+                	//System.out.println(o.toString()); 
 	                
 	                //TODO call crawlSubject with thing and depth+1
-	                crawlSubject(o.toString(), depth+1, tdb); 
+	                crawlSubject(o.toString(), depth+1, tdb);*/ 
                 }
             }
 		}
