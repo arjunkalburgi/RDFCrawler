@@ -17,7 +17,7 @@ public class crawler {
 //		foo.crawlFile();
 		
 		crawler doo = new crawler(pP); 
-		doo.setDepth(2); 
+		doo.setDepth(1); 
 		doo.crawlSubject("Albert Einstein");
 
 	}
@@ -77,6 +77,7 @@ public class crawler {
 
 	private void crawlSubject(String subject, int depth, Model tdb) {
 		if (depth < crawlDepth) {
+			System.out.println(depth + " " + crawlDepth); 
 
 			//Keep tdb model name here will not keep all the crawling for one resource in one set.   
 			//Model tdb = dataset.getNamedModel(subject);
@@ -92,21 +93,22 @@ public class crawler {
             r = qex.execSelect();
 
             Resource sub = ResourceFactory.createResource("http://dbpedia.org/resource/" + geturistring(subject));
+            
             while (r.hasNext()) {
                 QuerySolution t = r.nextSolution();
-                System.out.println(t.getResource("b".toString()) + " " + property_else);
-                System.out.println("Error is that it's not finding the right properties notice all the properties are false."); 
-                if (properties.containsKey(t.getResource("b".toString())) || property_else == true) {
-                	 
-                	/*Property p = ResourceFactory.createProperty(t.getResource("b").toString());
+                //System.out.println(properties.containsKey(t.getResource("b".toString()))); 
+                //System.out.println(t.getResource("b".toString()) + " " + properties.containsKey(t.getResource("b".toString())));
+                //System.out.println("Error is that it's not finding the right properties notice all the properties are false."); 
+                //if (properties.containsKey(t.getResource("b".toString())) || property_else == true) {
+                if (t.getResource("b".toString()).toString().contains("notableStudent")) {
+                	Property p = ResourceFactory.createProperty(t.getResource("b").toString());
 	                RDFNode o = t.get("x");
 	                //TODO store thing in tdb with subject as graph name
 	                tdb.add(sub, p, o);
-	                System.out.println(sub.toString() + " " + p.toString() + " " + o.toString());
-                	//System.out.println(o.toString()); 
-	                
+	                //System.out.println(sub.toString() + " " + p.toString() + " " + o.toString());
+                	
 	                //TODO call crawlSubject with thing and depth+1
-	                crawlSubject(o.toString(), depth+1, tdb);*/ 
+	                crawlSubject(o.toString(), depth+1, tdb); 
                 }
             }
 		}
@@ -121,7 +123,8 @@ public class crawler {
 		try (BufferedReader br = new BufferedReader(new FileReader(this.propertyPath))) {
 		    String line;
 		    while ((line = br.readLine()) != null) {
-		       if (line.split(" ")[1] == "else") {
+		    	properties.put(line, true); 
+		       /*if (line.split(" ")[1] == "else") {
 		    	   if (line.split(" ")[0] == "+") {
 		    		   this.property_else = true; 
 		    	   } else this.property_else = false;  
@@ -129,7 +132,7 @@ public class crawler {
 		    	   if (line.split(" ")[0] == "+") {
 			    	   properties.put(line.split(" ")[1], true); 
 			       } else properties.put(line.split(" ")[1], false); 
-		       }
+		       }*/
 		    }
 		}
 		catch (Exception e) {

@@ -1,1 +1,1 @@
-+ dbo:influencedBy
+http://dbpedia.org/ontology/notableStudent
