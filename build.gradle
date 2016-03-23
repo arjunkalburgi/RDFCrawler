@@ -6,7 +6,7 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 
 mainClassName = "crawler"
-applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
+//applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
 
 repositories {
     mavenCentral()

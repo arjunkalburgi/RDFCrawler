@@ -19,6 +19,7 @@ public class crawler {
 		crawler doo = new crawler(pP); 
 		doo.setDepth(1); 
 		doo.crawlSubject("Albert Einstein");
+		doo.draw();
 
 	}
 	
@@ -26,7 +27,6 @@ public class crawler {
 	private String propertyPath; 
 	private int crawlDepth = 2; 
 	private Dataset dataset;
-	private boolean property_else; 
 	private HashMap<String, Boolean> properties = new HashMap<String, Boolean>();
 
 	
@@ -63,59 +63,52 @@ public class crawler {
 	
 	public void crawlSubject(String subject) {
 		Model tdb = dataset.getNamedModel(subject);
-		crawlSubject(subject, 0, tdb); //starting depth
+		crawlSubject(subject, 0, tdb); //0 is starting depth
 		// Crawling is complete. Save data.
-		//tdb.tdbdump
-		//RDFDataMgr.write(System.out, tdb, RDFFormat.RDFXML); 
-		//tdb.write(new File("./src/output.xml"));
-		tdb.write(System.out, "RDF/XML"); 
+		//tdb.write(System.out, "RDF/XML"); 
+		
 	}
 	
 	public void draw() {
-		
+		dataset.asDatasetGraph();
 	}
 
 	private void crawlSubject(String subject, int depth, Model tdb) {
 		if (depth < crawlDepth) {
-			System.out.println(depth + " " + crawlDepth); 
-
-			//Keep tdb model name here will not keep all the crawling for one resource in one set.   
-			//Model tdb = dataset.getNamedModel(subject);
-
-            // get for s' data
-            String q = "PREFIX dbres: <http://dbpedia.org/resource/> " +
-                    "SELECT ?b ?x WHERE {" +
-                    " dbres:" + geturistring(subject) + " ?b ?x . " +
-                    "} ";
-            Query query = QueryFactory.create(q);
-            ResultSet r = null;
-            QueryExecution qex = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
-            r = qex.execSelect();
-
-            Resource sub = ResourceFactory.createResource("http://dbpedia.org/resource/" + geturistring(subject));
-            
-            while (r.hasNext()) {
-                QuerySolution t = r.nextSolution();
-                //System.out.println(properties.containsKey(t.getResource("b".toString()))); 
-                //System.out.println(t.getResource("b".toString()) + " " + properties.containsKey(t.getResource("b".toString())));
-                //System.out.println("Error is that it's not finding the right properties notice all the properties are false."); 
-                //if (properties.containsKey(t.getResource("b".toString())) || property_else == true) {
-                if (t.getResource("b".toString()).toString().contains("notableStudent")) {
-                	Property p = ResourceFactory.createProperty(t.getResource("b").toString());
-	                RDFNode o = t.get("x");
-	                //TODO store thing in tdb with subject as graph name
-	                tdb.add(sub, p, o);
-	                //System.out.println(sub.toString() + " " + p.toString() + " " + o.toString());
-                	
-	                //TODO call crawlSubject with thing and depth+1
-	                crawlSubject(o.toString(), depth+1, tdb); 
-                }
-            }
+			// query
+			String q = "PREFIX dbres: <http://dbpedia.org/resource/> " +
+		    		"SELECT ?property ?object WHERE {" +
+		            " dbres:" + geturistring(subject) + " ?property ?object . " +
+		            "} ";
+		    Query query = QueryFactory.create(q);
+		    ResultSet r = null;
+		    QueryExecution qex = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
+		    r = qex.execSelect();
+		
+		    // search through query 
+		    Resource sub = ResourceFactory.createResource("http://dbpedia.org/resource/" + geturistring(subject));
+		    while (r.hasNext()) {
+		    	QuerySolution t = r.nextSolution();
+		        if (properties.containsKey(concatenateuristring(t.getResource("property".toString()).toString()))) {
+		        	Property prop = ResourceFactory.createProperty(t.getResource("property".toString()).toString());
+		        	RDFNode obj = t.get("object".toString());
+		            
+		            //TODO store thing in tdb with subject as graph name
+		            tdb.add(sub, prop, obj);
+		        	
+		            //TODO call crawlSubject with thing and depth+1
+		            crawlSubject(concatenateuristring(obj.toString()), depth+1, tdb); 
+		        }
+		    }
 		}
 	}
 	
     private static String geturistring(String s) {
         return s.replaceAll(" ", "_"); 
+    }
+    
+    private static String concatenateuristring(String s) {
+    	return s.substring(s.indexOf("/", 20) + 1);
     }
     
     private void setHash() {
@@ -124,15 +117,6 @@ public class crawler {
 		    String line;
 		    while ((line = br.readLine()) != null) {
 		    	properties.put(line, true); 
-		       /*if (line.split(" ")[1] == "else") {
-		    	   if (line.split(" ")[0] == "+") {
-		    		   this.property_else = true; 
-		    	   } else this.property_else = false;  
-		       } else {
-		    	   if (line.split(" ")[0] == "+") {
-			    	   properties.put(line.split(" ")[1], true); 
-			       } else properties.put(line.split(" ")[1], false); 
-		       }*/
 		    }
 		}
 		catch (Exception e) {
