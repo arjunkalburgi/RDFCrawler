@@ -10,4 +10,4 @@ The goal of this project was to build a program that does exactly this: load, qu
 
 The project as it stands now does not have complete write capabilities. These bugs are yet to be worked out. 
 
-In future studies, it may by of interest to compare different graphs of RDF data. To see how similar graphs are. 
+In future studies, it may by of interest to compare outputs of the crawler (graphs) in order to see how similar searches are. This may allow us to create links between subjects that were not previously thought of. 
