@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.HashMap;
 
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 
 import com.hp.hpl.jena.query.*;
@@ -12,15 +14,16 @@ public class crawler {
 		String iP = "./input.txt"; 
 		String pP = "./properties.txt"; 
 		
-//		crawler foo = new crawler(iP, pP);
-//		foo.setDepth(2); 
-//		foo.crawlFile();
-		
-		crawler doo = new crawler(pP); 
-		doo.setDepth(1); 
-		doo.crawlSubject("Albert Einstein");
-		doo.draw();
+		crawler crawl = new crawler(pP); 
+		crawl.setDepth(1); 
+		crawl.crawlSubject("Albert Einstein");
+		crawl.crawlSubject("Marie Curie");
+		crawl.write();
 
+		// crawler slither = new crawler(iP, pP);
+		// slither.setDepth(2); 
+		// slither.crawlFile();
+		// slither.write(); 
 	}
 	
 	private String inputPath; 
@@ -62,15 +65,26 @@ public class crawler {
 	}
 	
 	public void crawlSubject(String subject) {
-		Model tdb = dataset.getNamedModel(subject);
+		Model tdb = dataset.getNamedModel(geturistring(subject));
 		crawlSubject(subject, 0, tdb); //0 is starting depth
-		// Crawling is complete. Save data.
-		//tdb.write(System.out, "RDF/XML"); 
-		
 	}
 	
-	public void draw() {
-		dataset.asDatasetGraph();
+	public void write() {
+		try {
+			File file = new File("./output.txt");
+			OutputStream fop;
+				fop = new FileOutputStream(file);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			RDFDataMgr.write(fop, dataset, RDFFormat.NQUADS);
+		} catch (FileNotFoundException e) {
+			
+		} catch (IOException e) {
+			System.out.println("write failed due to inability to create output.txt. Please create it manually.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void crawlSubject(String subject, int depth, Model tdb) {
@@ -93,10 +107,10 @@ public class crawler {
 		        	Property prop = ResourceFactory.createProperty(t.getResource("property".toString()).toString());
 		        	RDFNode obj = t.get("object".toString());
 		            
-		            //TODO store thing in tdb with subject as graph name
+		            // store triple in tdb
 		            tdb.add(sub, prop, obj);
 		        	
-		            //TODO call crawlSubject with thing and depth+1
+		            // call crawlSubject with object and depth+1
 		            crawlSubject(concatenateuristring(obj.toString()), depth+1, tdb); 
 		        }
 		    }
